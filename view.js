@@ -38,29 +38,32 @@ function StateMachine() {
 
             // Change de porte?
             case 1:
-                if(!clickedDoor._opened)
+                if(clickedDoor._opened)
+                    break;
+
+
+                
+                clickedDoor.open();
+
+                if (clickedDoor._winner)
                 {
-                    clickedDoor.open();
+                    wins += 1;
+                    resultText.innerHTML = "You have won!";
 
-                    if (clickedDoor._winner)
+                    if (clickedDoor.getID() != firstSelectedDoor)
                     {
-                        wins += 1;
-                        resultText.innerHTML = "You have won!";
-
-                        if (clickedDoor.getID() != firstSelectedDoor)
-                        {
-                            winsWithSwitch += 1;
-                        }
+                        winsWithSwitch += 1;
                     }
+                }
 
-                    else
-                    {
-                        resultText.innerHTML = "You lost :(";
-                    }
+                else
+                {
+                    resultText.innerHTML = "You lost :(";
+                }
 
                 plays += 1;
                 state += 1;
-                }
+                
 
 
                 winsText.innerHTML = "You have won " + wins + " times."
@@ -175,6 +178,11 @@ function Door(id, divName, stateMachine) {
     this._winner = false;
 
 
+    // Set goat image for everybody
+    $("#room" + _id).css("background-image", "url(chevre.png)");
+    $("#room" + _id).css("background-size", "cover");
+    // $("#room" + _id).css("background-position", "center");
+
     this.reset = function () {
 
         if (this._selected)
@@ -231,8 +239,10 @@ function Door(id, divName, stateMachine) {
     // SETTERS / GETTERS
     this.setWinner = function () {
         this._winner = true;
-        $("#room" + _id).css("background-image", "url(car.jpg)");
+        $("#room" + _id).css("background-image", "url(car.png)");
         $("#room" + _id).css("background-size", "cover");
+        $("#room" + _id).css("background-position", "center");
+
 
     };
 
