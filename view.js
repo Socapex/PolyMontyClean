@@ -210,7 +210,7 @@ function Door(id, divName, stateMachine) {
         this._opened = true;
 
         // Animation
-        var ROTATION = "perspective( 600px ) rotateY(-80deg)";
+        var ROTATION = "perspective( 600px ) rotateY(-100deg)";
         $(_doorDiv).css("transform", ROTATION).css("-webkit-transform", ROTATION);
     };
 
