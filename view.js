@@ -21,7 +21,7 @@ function StateMachine() {
         {
             // Selectionner premiere porte
             case 0:
-                firstSelectedDoor = clickedDoor._id;
+                firstSelectedDoor = clickedDoor.getID();
                 console.log(firstSelectedDoor);
 
                 clickedDoor.select();
@@ -42,7 +42,7 @@ function StateMachine() {
                         wins += 1;
                         resultText.innerHTML = "You have won!";
 
-                        if (clickedDoor._id != firstSelectedDoor)
+                        if (clickedDoor.getID() != firstSelectedDoor)
                         {
                             winsWithSwitch += 1;
                         }
@@ -217,6 +217,10 @@ function Door(id, divName, stateMachine) {
     // SETTERS / GETTERS
     this.setWinner = function () {
         this._winner = true;
+    };
+
+    this.getID = function () {
+        return _id;
     };
 
 
