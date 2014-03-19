@@ -14,6 +14,12 @@ function StateMachine() {
     this.nextState = function (clickedDoor)
     {
 
+        var resultText = document.getElementById("Results");
+        var winsText = document.getElementById("Wins");
+        var winsWithSwitchText = document.getElementById("WinsWithSwitch");
+        var playsText = document.getElementById("Plays");
+        var instructText = document.getElementById("Instructions");
+
 
         // console.log("patate");
 
@@ -36,7 +42,6 @@ function StateMachine() {
                 {
                     clickedDoor.open();
 
-                    var resultText = document.getElementById("Results");
                     if (clickedDoor._winner)
                     {
                         wins += 1;
@@ -57,10 +62,6 @@ function StateMachine() {
                 state += 1;
                 }
 
-                var winsText = document.getElementById("Wins");
-                var winsWithSwitchText = document.getElementById("WinsWithSwitch");
-                var playsText = document.getElementById("Plays");
-                var instructText = document.getElementById("Instructions");
 
                 winsText.innerHTML = "You have won " + wins + " times."
                 winsWithSwitchText.innerHTML = "You have won " + winsWithSwitch + " times when switching."
@@ -71,6 +72,10 @@ function StateMachine() {
 
             // Reset everything
             case 2:
+
+                resultText.innerHTML = "";
+                instructText.innerHTML = "Choose a door to win a car!";
+
                 stateMachine.reset();
                 view.closeAllDoors();
                 view.reset();
