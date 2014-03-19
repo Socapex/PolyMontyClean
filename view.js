@@ -88,6 +88,10 @@ function StateMachine() {
     };
 };
 
+
+
+
+
 function View(stateMachine) {
     var that = this;
     var doors = new Array;
@@ -176,12 +180,18 @@ function Door(id, divName, stateMachine) {
         if (this._selected)
             document.getElementById("door" + _id).style.backgroundColor = "grey";
 
+        if (this._winner)
+            $("#room" + _id).css("background-image", "none");
+
         this._selected = false;
         this._opened = false;
         this._winner = false;
 
 
     };
+
+
+
 
     this.open = function () {
         // Logique
@@ -209,7 +219,6 @@ function Door(id, divName, stateMachine) {
         document.getElementById("door" + _id).style.backgroundColor = "blue";
     };
 
-    // this.open = open;
     this.close = close;
 
     this.onOpen = function(callback) {
@@ -222,6 +231,9 @@ function Door(id, divName, stateMachine) {
     // SETTERS / GETTERS
     this.setWinner = function () {
         this._winner = true;
+        $("#room" + _id).css("background-image", "url(car.jpg)");
+        $("#room" + _id).css("background-size", "cover");
+
     };
 
     this.getID = function () {
@@ -232,7 +244,7 @@ function Door(id, divName, stateMachine) {
     // Click
     _doorDiv.on("click", function() {
         if (_onOpenCallback)
-            _onOpenCallback(_that);//.call(this);
+            _onOpenCallback(_that);
 
         // if (!_opened)
         // {
