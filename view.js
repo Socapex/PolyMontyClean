@@ -191,6 +191,10 @@ function Door(id, divName, stateMachine) {
         if (this._winner)
             $("#room" + _id).css("background-image", "none");
 
+
+        $("#room" + _id).css("background-image", "url(chevre.png)");
+        $("#room" + _id).css("background-size", "cover");
+        
         this._selected = false;
         this._opened = false;
         this._winner = false;
