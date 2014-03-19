@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monty Hall Problem</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script type="text/javascript" src="jquery-2.1.0.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="view.js"></script>
+</head>
+
+<!--
+<body onload="onLoad();">
+    <p id="para1">Choisissez une porte:</p>
+    <div width= "250">
+        <canvas id="canvas" width="250" height="250"></canvas> <br>
+            <button onclick="changeColor('blue');">Porte 1</button>
+            <button onclick="changeColor('red');">Porte 2</button>
+            <button onclick="changeColor('green');">Porte 3</button>
+    </div>
+-->    
+
+<body onload="init();">
+    <div class="gameArea">
+        <div class="gameAreaContent">
+
+            <p id="Results"></p>
+            
+            <p id="Instructions">Choose a door to win a car!</p>
+
+            <div class="doorRoomGroup" style="left:15%">
+                <div id="door1" class="door">
+
+                </div>
+                <div class="room">
+
+                </div>
+            </div>
+            <div class="doorRoomGroup" style="left:40%">
+                <div id="door2" class="door">
+
+                </div>
+                <div class="room">
+
+                </div>
+            </div>
+            <div class="doorRoomGroup" style="left:65%">
+                <div id="door3" class="door">
+
+                </div>
+                <div class="room">
+
+                </div>
+            </div>
+
+        </div>
+        
+        <p id="Wins">You have won 0 times.</p>
+        <p id="WinsWithSwitch">You have won 0 times when switching.</p>
+        <p id="Plays">You have played 0 times.</p>
+    </div>
+</body>
+</html>
