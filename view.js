@@ -205,9 +205,19 @@ function Door(id, divName, stateMachine) {
         // Logique
         this._opened = true;
 
-        // Animation
-        var ROTATION = "perspective( 600px ) rotateY(-80deg)";
-        $(_doorDiv).css("transform", ROTATION).css("-webkit-transform", ROTATION);
+        var angle = 0.0;
+        var FPS = 30.0;
+        var TARGET_ANGLE = -100.0;
+        var interval = setInterval(function () {
+            angle += TARGET_ANGLE / (FPS * 2); // 2 seconds
+            if (angle <= TARGET_ANGLE) {
+                clearInterval(interval);
+                return;
+            }
+            // Animation
+            var ROTATION = "perspective( 600px ) rotateY(" + angle + "deg)";
+            $(_doorDiv).css("transform", ROTATION).css("-webkit-transform", ROTATION);
+        }, 1000 / FPS);
     };
 
     function close() {
