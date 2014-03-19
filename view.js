@@ -167,12 +167,14 @@ function Door(id, divName, stateMachine) {
 
 
     this.reset = function () {
+
+        if (this._selected)
+            document.getElementById("door" + _id).style.backgroundColor = "grey";
+
         this._selected = false;
         this._opened = false;
         this._winner = false;
 
-        if (this._selected)
-            document.getElementById("door" + _id).style.backgroundColor = "grey";
 
     };
 
