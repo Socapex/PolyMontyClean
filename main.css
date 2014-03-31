@@ -8,6 +8,7 @@ canvas {
     border-size: 5px;
     display: inline-block;
     position: relative;
+    overflow:hidden;
 }
 
 .gameArea:before {
@@ -55,6 +56,43 @@ canvas {
     border: solid;
     border-size: 5px;
     z-index:-1;
+}
+
+/*
+ * Class that formats the DIV that contains the host and his text bubble.
+ * We use CSS3's animations so when the transform property changes,
+ * it makes an animation that takes a certain amount of time before.
+ */
+#host {
+    position:absolute;
+    display:block;
+    z-index:1;
+    text-align:center;
+    transition:transform 1s;
+    -webkit-transition:-webkit-transform 1s;
+    transform:rotateZ(0deg);
+    -webkit-transform:rotateZ(0deg);
+    transform-origin:0% 100%;
+    -webkit-transform-origin:0% 100%;
+}
+
+/*
+ * Class that formats the host's text bubble.
+ */
+#bubble {
+    height:50px;
+    border:solid;
+    border-radius:5px;
+    border-size:1;
+    background-color:white;
+}
+
+/*
+ * Class that formats the host's image.
+ */
+#hostImg {
+    padding:8px;
+    top:55px;
 }
 
 

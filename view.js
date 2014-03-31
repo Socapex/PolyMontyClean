@@ -210,7 +210,7 @@ function Door(id, divName, stateMachine) {
         this._opened = true;
 
         var angle = 0.0;
-        var FPS = 30.0;
+        var FPS = 60.0;
         var TARGET_ANGLE = -100.0;
         var interval = setInterval(function () {
             angle += TARGET_ANGLE / (FPS * 2); // 2 seconds
@@ -280,3 +280,143 @@ function Door(id, divName, stateMachine) {
 
     });
 }
+
+/**
+ * Gets the singleton instance of Host.
+ */
+var getHost = (function() {
+    /**
+     * Represents our game's host.
+     */
+    function Host() {
+        // We block animations while one is already executing
+        var animating_ = false;
+
+        /**
+         * Closes the host's text bubble.
+         * @param callback A function that will be called when
+         * the animation is done.
+         */
+        function closeBubble(callback) {
+            if ($("#bubble").css("opacity") > 0) {
+                $("#bubble").fadeTo(500, 0, function() {
+                    if (callback)
+                        callback();
+                });
+            } else {
+                callback();
+            }
+        }
+        this.closeBubble = closeBubble;
+
+        /**
+         * Displays a text bubble above the host.
+         * @param text The text to put in the bubble.
+         * @param callback A function that will be called when the
+         * animation is completed.
+         */
+        this.say = function(text, callback) {
+            if (animating_)
+                return;
+            animating_ = true;
+            $("#bubble").text(text);
+            $("#bubble").fadeTo(500, 1, function() {
+                animating_ = false;
+                if (callback)
+                    callback();
+            });
+        }
+
+        /**
+         * Moves the host to a new position without any animation.
+         * @param x The new x coordinate
+         * @param y The new y coordinate
+         */
+        this.moveTo = function(x, y) {
+            if (animating_)
+                return;
+            $("#host").css("left", x + "%").css("top", y + "%");
+        }
+
+        /**
+         * Moves the host to a new position with an animation.
+         * @param x The new x coordinate
+         * @param y The new y coordinate
+         * @param duration The time in milliseconds the animation will last.
+         * @param callback A function that will be called when the animation
+         *                 is complete.
+         */
+        this.moveToAnimated = function(x, y, duration, callback) {
+            if (animating_)
+                return;
+            animating_ = true;
+            closeBubble(function() {
+                $("#host").animate(
+                    {left:x + "%", top:y + "%"},
+                    duration,
+                    "swing",
+                    function() {
+                        animating_ = false;
+                        if (callback)
+                            callback();
+                    }
+                );
+            });
+        }
+
+        /**
+         * Makes the host fall.
+         * @param callback A function that will be called when the animation
+         *                 is complete.
+         */
+        this.fall = function(callback) {
+            if (animating_)
+                return;
+            animating_ = true;
+            closeBubble(function() {
+                $("#host").css("transform", "rotateZ(-90deg)")
+                    .css("-webkit-transform", "rotateZ(-90deg)");
+                wait(1000, function() {
+                    animating_ = false;
+                    if (callback)
+                        callback();
+                });
+            });
+        }
+
+        /**
+         * Makes the host get up after he fell.
+         * @param callback A function that will be called when the animation
+         *                 is complete.
+         */
+        this.getUp = function(callback) {
+            if (animating_)
+                return;
+            animating_ = true;
+            closeBubble(function() {
+                $("#host").css("transform", "rotateZ(0deg)")
+                    .css("-webkit-transform", "rotateZ(0deg)");
+                wait(1000, function() {
+                    animating_ = false;
+                    if (callback)
+                        callback();
+                });
+            });
+        }
+
+        /**
+         * Waits millis milliseconds before calling callback.
+         * @param callback A function that will be called when the wait
+         *                 finishes.
+         */
+        function wait(millis, callback) {
+            setTimeout(callback, millis);
+        }
+
+        this.wait = wait;
+    }
+
+    var instance = new Host();
+
+    return function() { return instance; }
+})();
