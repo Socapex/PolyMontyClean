@@ -1,7 +1,9 @@
 
 
-function StateMachine() {
+function StateMachine(host) {
+    var _that = this;
     var state = 0;
+    this.readyToClick = true;
     this.firstSelectedDoor = -1;
 
     // console.log("tomate");
@@ -9,29 +11,49 @@ function StateMachine() {
     this.reset = function () {
         state = 0;
         this.firstSelectedDoor = -1;
+        view.closeAllDoors();
+        view.reset();
+        _that.readyToClick = true;
     };
+
+    this.resetHost = function ()
+    {
+        host.moveToAnimated(68, 52, 500, function() {
+            host.say("Choose a door to win a car!", stateMachine.reset)
+        });
+    }
 
     this.nextState = function (clickedDoor)
     {
 
-        var resultText = document.getElementById("Results");
+        //var resultText = document.getElementById("Results");
         var winsText = document.getElementById("Wins");
         var winsWithSwitchText = document.getElementById("WinsWithSwitch");
         var playsText = document.getElementById("Plays");
-        var instructText = document.getElementById("Instructions");
+        //var instructText = document.getElementById("Instructions");
 
 
-        // console.log("patate");
+        // Dont allow click if animating stuff
+        if (!_that.readyToClick)
+            return;
 
         switch(state)
         {
             // Selectionner premiere porte
             case 0:
+
+                _that.readyToClick = false;
                 firstSelectedDoor = clickedDoor.getID();
-                console.log(firstSelectedDoor);
 
                 clickedDoor.select();
-                view.showADoor();
+
+                host.closeBubble(function() {
+                    host.say("I will now open an empty door.", function() {
+                        host.wait(1000, function() {
+                            host.moveToAnimated(50, 50, 1000, view.showADoor)
+                        })
+                    })
+                })
 
                 state += 1;
                 break;
@@ -41,14 +63,19 @@ function StateMachine() {
                 if(clickedDoor._opened)
                     break;
 
-
+                _that.readyToClick = false;
                 
                 clickedDoor.open();
+
+                // Override the door saying we can open the door, or else BAD THINGS HAPPEN TO KITTENS OMG!
+                _that.readyToClick = false;
 
                 if (clickedDoor._winner)
                 {
                     wins += 1;
-                    resultText.innerHTML = "You have won!";
+                    host.say("Congratulations, you have won!", function() {
+                        host.wait(1000, stateMachine.resetHost)
+                    });
 
                     if (clickedDoor.getID() != firstSelectedDoor)
                     {
@@ -58,30 +85,16 @@ function StateMachine() {
 
                 else
                 {
-                    resultText.innerHTML = "You lost :(";
+                    host.say("You lost, better luck next time.", function() {
+                        host.wait(1000, stateMachine.resetHost)
+                    });
                 }
 
                 plays += 1;
-                state += 1;
-                
 
-
-                winsText.innerHTML = "You have won " + wins + " times."
-                winsWithSwitchText.innerHTML = "You have won " + winsWithSwitch + " times when switching."
-                playsText.innerHTML = "You have played " + plays + " times."
-                instructText.innerHTML = "Click a door to try again...";
-
-                break;
-
-            // Reset everything
-            case 2:
-
-                resultText.innerHTML = "";
-                instructText.innerHTML = "Choose a door to win a car!";
-
-                stateMachine.reset();
-                view.closeAllDoors();
-                view.reset();
+                winsText.innerHTML = "Wins ratio: " + (wins/plays).toFixed(2) + ".";
+                winsWithSwitchText.innerHTML = "Wins with switch ratio: " + (winsWithSwitch/plays).toFixed(2) + ".";
+                playsText.innerHTML = "You have played " + plays + " times.";
 
                 break;
 
@@ -137,7 +150,6 @@ function View(stateMachine) {
     };
 
     this.showADoor = function () {
-        // console.log("showADoor");
         var elegibleDoors = new Array;
 
         for (var i = 0; i < 3; ++i)
@@ -154,7 +166,8 @@ function View(stateMachine) {
         }
 
         var doorToShow = Math.floor(Math.random() * elegibleDoors.length);
-        elegibleDoors[doorToShow].open();
+
+        elegibleDoors[doorToShow].open(stateMachine);
 
     };
 };
@@ -213,7 +226,7 @@ function Door(id, divName, stateMachine) {
         var FPS = 60.0;
         var TARGET_ANGLE = -100.0;
         var interval = setInterval(function () {
-            angle += TARGET_ANGLE / (FPS * 2); // 2 seconds
+            angle += TARGET_ANGLE / (FPS * 1); // 1 seconds
             if (angle <= TARGET_ANGLE) {
                 clearInterval(interval);
                 return;
@@ -222,6 +235,9 @@ function Door(id, divName, stateMachine) {
             var ROTATION = "perspective( 600px ) rotateY(" + angle + "deg)";
             $(_doorDiv).css("transform", ROTATION).css("-webkit-transform", ROTATION);
         }, 1000 / FPS);
+
+        // Tell the statemachine we can open a new door
+        stateMachine.readyToClick = true;
     };
 
     function close() {
@@ -268,16 +284,6 @@ function Door(id, divName, stateMachine) {
     _doorDiv.on("click", function() {
         if (_onOpenCallback)
             _onOpenCallback(_that);
-
-        // if (!_opened)
-        // {
-        //     open();
-        // }
-        // else
-        // {
-        //     close();
-        // }
-
     });
 }
 
@@ -414,6 +420,16 @@ var getHost = (function() {
         }
 
         this.wait = wait;
+
+
+
+
+        // SETTERS / GETTERS
+
+        this.getAnimating = function()
+        {
+            return animating_;
+        }
     }
 
     var instance = new Host();
