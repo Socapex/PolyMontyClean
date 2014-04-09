@@ -199,7 +199,7 @@ function Door(id, divName, stateMachine) {
     this.reset = function () {
 
         if (this._selected)
-            document.getElementById("door" + _id).style.backgroundColor = "grey";
+            $("#door" + _id).css("border-style", "none");
 
         if (this._winner)
             $("#room" + _id).css("background-image", "none");
@@ -253,7 +253,7 @@ function Door(id, divName, stateMachine) {
     this.select = function() {
         this._selected = true;
         // console.log("door" + _id);
-        document.getElementById("door" + _id).style.backgroundColor = "blue";
+        $("#door" + _id).css("border-style", "solid");
     };
 
     this.close = close;
